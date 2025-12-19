@@ -1,0 +1,16 @@
+model User {
+  id         String   @id @default(uuid())
+  firstName  String
+  lastName   String
+  email      String   @unique
+  password   String
+  role       String
+  isVerified Boolean  @default(false)
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+
+  // Optional: Add timestamps for updates if needed
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}

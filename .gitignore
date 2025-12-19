@@ -8,3 +8,7 @@ node_modules
 
 /generated/prisma
 .generated
+
+/src/generated/prisma
+
+/src/generated/prisma

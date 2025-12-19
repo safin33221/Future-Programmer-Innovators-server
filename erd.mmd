@@ -1,0 +1,127 @@
+erDiagram
+
+    USER {
+        string id 
+        string firstName
+        string lastName
+        string email
+        string password
+        string role
+        boolean isVerified
+        boolean isActive
+        string createdAt
+    }
+
+    ADMIN {
+        string id
+        string userId
+        string adminLevel
+    }
+
+    STUDENT {
+        string id
+        string userId
+        string studentId
+        string department
+        string session
+        string profileImage
+    }
+
+    MENTOR {
+        string id
+        string userId
+        string expertise
+        string designation
+        string experience
+        string github
+        string linkedin
+        string portfolio
+    }
+
+    MODERATOR {
+        string id
+        string userId
+        string permissions
+    }
+
+    CLUB {
+        string id
+        string title
+        string description
+        string createdBy
+    }
+
+    EVENT {
+        string id
+        string title
+        string description
+        string eventType
+        string startTime
+        string endTime
+        string location
+        string status
+        string createdBy
+    }
+
+    EVENT_REGISTRATION {
+        string id
+        string eventId
+        string userId
+        string paymentId
+        string status
+    }
+
+    EVENT_FEEDBACK {
+        string id
+        string eventId
+        string userId
+        string rating
+        string comment
+    }
+
+    COURSE {
+        string id
+        string title
+        string description
+        string mentorId
+        string paymentId
+        string status
+    }
+
+    ENROLLMENT {
+        string id
+        string courseId
+        string studentId
+        string paymentId
+        string enrolledAt
+    }
+
+    PAYMENT {
+        string id
+        string userId
+        string amount
+        string paymentType
+        string method
+        string createdAt
+    }
+
+    %% RELATIONSHIPS
+    USER ||--o| ADMIN : has
+    USER ||--o| STUDENT : has
+    USER ||--o| MENTOR : has
+    USER ||--o| MODERATOR : has
+
+    ADMIN ||--o{ CLUB : manages
+    ADMIN ||--o{ EVENT : creates
+
+    EVENT ||--o{ EVENT_REGISTRATION : has
+    USER ||--o{ EVENT_REGISTRATION : registers
+
+    EVENT ||--o{ EVENT_FEEDBACK : receives
+    USER ||--o{ EVENT_FEEDBACK : gives
+
+    MENTOR ||--o{ COURSE : teaches
+    STUDENT ||--o{ ENROLLMENT : enrolls
+    COURSE ||--o{ ENROLLMENT : contains
+
+    USER ||--o{ PAYMENT : makes
