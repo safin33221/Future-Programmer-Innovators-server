@@ -1,0 +1,13 @@
+enum UserRole {
+  USER
+  ADMIN
+  MODERATOR
+}
+
+enum EventStatus {
+    DRAFT
+    UPCOMING
+    ONGOING
+    COMPLETED
+    CANCELLED
+}
