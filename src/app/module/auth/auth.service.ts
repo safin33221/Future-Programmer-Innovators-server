@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import jwt, { type JwtPayload, type SignOptions } from "jsonwebtoken";
 import { prisma } from "../../../lib/prisma";
 import envConfig from "../../../config/env.config";
+import { jwtHelper } from "../../helper/jwtHelper";
 
 const login = async (payload: { email: string; password: string }) => {
     // 1️⃣ Find user
@@ -28,29 +29,36 @@ const login = async (payload: { email: string; password: string }) => {
         throw new Error("Invalid  password");
     }
     // 4️⃣ Generate tokens
-    const accessTokenOptions: SignOptions = {
-        expiresIn: envConfig.JWT.JWT_ACCESS_EXPIRES_IN as number,
-    };
 
-    const refreshTokenOptions: SignOptions = {
-        expiresIn: envConfig.JWT.JWT_REFRESH_EXPIRES_IN as number,
-    };
+    // const accessToken = jwt.sign(
+    //     {
+    //         userId: user.id,
+    //         role: user.role,
+    //         email: user.email,
+    //     },
+    //     envConfig.JWT.JWT_ACCESS_SECRET,
+    //     {
+    //         expiresIn: envConfig.JWT.JWT_ACCESS_EXPIRES_IN
+    //     } as SignOptions
+    // );
 
-    const accessToken = jwt.sign(
-        {
-            userId: user.id,
-            role: user.role,
-            email: user.email,
-        },
-        envConfig.JWT.JWT_ACCESS_SECRET,
-        accessTokenOptions
-    );
+    // const refreshToken = jwt.sign(
+    //     { userId: user.id },
+    //     envConfig.JWT.JWT_REFRESH_SECRET,
+    //     {
+    //         expiresIn: envConfig.JWT.JWT_REFRESH_EXPIRES_IN
+    //     } as SignOptions
+    // );
 
-    const refreshToken = jwt.sign(
-        { userId: user.id },
-        envConfig.JWT.JWT_REFRESH_SECRET,
-        refreshTokenOptions
-    );
+    const JwtPayload = {
+        userID: user.id,
+        email: user.email,
+        roll: user.role
+
+
+    } as JwtPayload
+    const accessToken = jwtHelper.generateToken(JwtPayload, envConfig.JWT.JWT_ACCESS_SECRET, envConfig.JWT.JWT_ACCESS_EXPIRES_IN as string)
+    const refreshToken = jwtHelper.generateToken(JwtPayload, envConfig.JWT.JWT_REFRESH_SECRET, envConfig.JWT.JWT_REFRESH_EXPIRES_IN as string)
 
     // 5️⃣ Remove sensitive fields
 
