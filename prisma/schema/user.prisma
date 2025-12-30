@@ -1,24 +1,83 @@
 model User {
-    id                 String              @id @default(ulid()) // or @default(uuid())
-    firstName          String
-    lastName           String
-    email              String              @unique
-    password           String
-    role               UserRole            @default(USER)
-    isVerified         Boolean             @default(false)
-    isActive           Boolean             @default(true)
-    createdAt          DateTime            @default(now())
-    updatedAt          DateTime            @updatedAt
+    id         String   @id @default(ulid()) // or @default(uuid())
+    firstName  String
+    lastName   String
+    email      String   @unique
+    password   String
+    role       UserRole @default(USER)
+    isVerified Boolean  @default(false)
+    isActive   Boolean  @default(true)
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+
+    // Profile relations (one-to-one)
+    admin     Admin?
+    student   Student?
+    mentor    Mentor?
+    moderator Moderator?
+
     eventFeedbacks     EventFeedback[]
     eventRegistrations EventRegistration[]
 
-    events Event[]
+    events   Event[]
+    payments Payment[]
 
     // Indexes for better query performance
     // Indexes for better query performance
-    payments Payment[]
 
     @@index([role])
     @@index([isActive])
     @@map("users")
+}
+
+model Admin {
+    id         String     @id @default(uuid())
+    userId     String     @unique
+    adminLevel AdminLevel @default(BASIC)
+
+    user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    events Event[]
+    //   clubs      Club[]
+
+    @@map("admins")
+}
+
+model Student {
+    id           String  @id @default(uuid())
+    userId       String  @unique
+    studentId    String  @unique
+    department   String
+    session      String
+    profileImage String?
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    // enrollments Enrollment[]
+
+    @@map("students")
+}
+
+model Mentor {
+    id          String  @id @default(uuid())
+    userId      String  @unique
+    expertise   String
+    designation String
+    experience  String
+    github      String?
+    linkedin    String?
+    portfolio   String?
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    //   courses    Course[]
+
+    @@map("mentors")
+}
+
+model Moderator {
+    id          String @id @default(uuid())
+    userId      String @unique
+    permissions Json // Array of permission strings
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@map("moderators")
 }

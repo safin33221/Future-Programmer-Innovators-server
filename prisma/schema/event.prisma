@@ -17,6 +17,8 @@ model Event {
     updatedAt          DateTime            @updatedAt
     eventFeedbacks     EventFeedback[]
     eventRegistrations EventRegistration[]
+    admin              Admin?              @relation(fields: [adminId], references: [id])
+    adminId            String?
 
     @@map("events")
 }
