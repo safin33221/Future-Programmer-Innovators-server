@@ -26,29 +26,11 @@ const login = async (payload: { email: string; password: string }) => {
     );
 
     if (!isPasswordMatch) {
-        throw new Error("Invalid  password");
+        throw new Error("Invalid password");
     }
-    // 4️⃣ Generate tokens
+    
 
-    // const accessToken = jwt.sign(
-    //     {
-    //         userId: user.id,
-    //         role: user.role,
-    //         email: user.email,
-    //     },
-    //     envConfig.JWT.JWT_ACCESS_SECRET,
-    //     {
-    //         expiresIn: envConfig.JWT.JWT_ACCESS_EXPIRES_IN
-    //     } as SignOptions
-    // );
-
-    // const refreshToken = jwt.sign(
-    //     { userId: user.id },
-    //     envConfig.JWT.JWT_REFRESH_SECRET,
-    //     {
-    //         expiresIn: envConfig.JWT.JWT_REFRESH_EXPIRES_IN
-    //     } as SignOptions
-    // );
+    
 
     const JwtPayload = {
         userID: user.id,
