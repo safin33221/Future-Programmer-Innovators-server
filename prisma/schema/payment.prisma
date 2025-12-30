@@ -1,0 +1,43 @@
+model Payment {
+    id          String        @id @default(uuid())
+    userId      String
+    amount      Decimal       @db.Decimal(10, 2)
+    currency    String        @default("USD")
+    paymentType PaymentType
+    method      PaymentMethod
+    status      PaymentStatus @default(PENDING)
+
+    // Payment details
+    description String? // e.g., "Course: Web Development", "Event: Annual Conference"
+    metadata    Json? // Additional payment data
+
+    // External references
+    transactionId String? // Payment gateway transaction ID
+    gateway       String? // "stripe", "paypal", "razorpay", etc.
+
+    // Timestamps
+    createdAt  DateTime  @default(now())
+    updatedAt  DateTime  @updatedAt
+    paidAt     DateTime?
+    refundedAt DateTime?
+
+    // Relations
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    // Polymorphic relations to different entities
+    eventRegistration EventRegistration? @relation(fields: [eventRegistrationId], references: [id])
+    // enrollment        Enrollment?
+
+    // Add more as needed: membershipPayment MembershipPayment?, etc.
+    eventRegistrationId String?
+    enrollment          Enrollment? @relation(fields: [enrollmentId], references: [id])
+    enrollmentId        String?
+
+    @@index([userId])
+    @@index([paymentType])
+    @@index([status])
+    @@index([transactionId])
+    @@index([createdAt])
+    @@index([userId, status])
+    @@map("payments")
+}

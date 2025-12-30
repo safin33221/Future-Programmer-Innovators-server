@@ -23,5 +23,39 @@ enum RegistrationStatus {
     EXPIRED
 }
 
+enum PaymentType {
+    COURSE_ENROLLMENT
+    EVENT_REGISTRATION
+    MEMBERSHIP_SUBSCRIPTION // For future use
+    DONATION // For future use
+    PRODUCT_PURCHASE // For future use
+    OTHER
+}
 
- 
+enum PaymentMethod {
+    CREDIT_CARD
+    DEBIT_CARD
+    PAYPAL
+    BANK_TRANSFER
+    CASH
+    MOBILE_WALLET
+    OTHER
+}
+
+enum PaymentStatus {
+    PENDING
+    PROCESSING
+    COMPLETED
+    FAILED
+    REFUNDED
+    PARTIALLY_REFUNDED
+    CANCELLED
+    EXPIRED
+}
+
+enum EnrollmentStatus {
+    ACTIVE
+    COMPLETED
+    DROPPED
+    SUSPENDED
+}

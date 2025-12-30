@@ -16,6 +16,7 @@ model User {
 
     // Indexes for better query performance
     // Indexes for better query performance
+    payments Payment[]
 
     @@index([role])
     @@index([isActive])

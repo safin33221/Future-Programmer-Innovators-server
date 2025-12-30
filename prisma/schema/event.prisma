@@ -58,9 +58,10 @@ model EventRegistration {
     cancelledAt  DateTime?
 
     // Relations
-    user  User  @relation(fields: [userId], references: [id], onDelete: Restrict)
-    event Event @relation(fields: [eventId], references: [id], onDelete: Cascade) //   payment     Payment?    @relation(fields: [paymentId], references: [id], onDelete: SetNull)
+    user     User      @relation(fields: [userId], references: [id], onDelete: Restrict)
+    event    Event     @relation(fields: [eventId], references: [id], onDelete: Cascade) //   payment     Payment?    @relation(fields: [paymentId], references: [id], onDelete: SetNull)
     //   ticketType  TicketType? @relation(fields: [ticketTypeId], references: [id])
+    payments Payment[]
 
     // Unique constraints
     @@unique([eventId, userId])

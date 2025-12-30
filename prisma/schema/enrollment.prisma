@@ -1,0 +1,27 @@
+model Enrollment {
+    id        String  @id @default(cuid())
+    courseId  String
+    studentId String
+    paymentId String?
+
+    // Enrollment details
+    status   EnrollmentStatus @default(ACTIVE)
+    progress Int              @default(0) // percentage 0-100
+
+    // Timestamps
+    enrolledAt  DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+    completedAt DateTime?
+
+    // Relations
+    //   course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+    //   student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+    // payment Payment? @relation(fields: [paymentId], references: [id], onDelete: SetNull)
+    payments Payment[]
+
+    @@unique([courseId, studentId])
+    @@index([courseId])
+    @@index([studentId])
+    @@index([status])
+    @@map("enrollments")
+}
