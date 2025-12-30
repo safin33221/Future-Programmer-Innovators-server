@@ -10,11 +10,84 @@ model Event {
     createdBy   String
 
     // Relations
-    // user User @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+    user User @relation(fields: [createdBy], references: [id], onDelete: Cascade)
 
     // Timestamps
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    createdAt          DateTime            @default(now())
+    updatedAt          DateTime            @updatedAt
+    eventFeedbacks     EventFeedback[]
+    eventRegistrations EventRegistration[]
 
     @@map("events")
+}
+
+model EventRegistration {
+    id        String             @id @default(uuid())
+    eventId   String
+    userId    String
+    paymentId String?
+    status    RegistrationStatus @default(PENDING)
+
+    // Registration details
+    ticketTypeId String? // Reference to ticket type if event has multiple ticket types
+    ticketNumber String? @unique // Unique ticket number/QR code
+    seatNumber   String? // For seated events
+
+    // Pricing
+    unitPrice      Decimal? @db.Decimal(10, 2)
+    quantity       Int      @default(1)
+    totalAmount    Decimal? @db.Decimal(10, 2)
+    discountCode   String?
+    discountAmount Decimal? @db.Decimal(10, 2)
+
+    // Personalization
+    dietaryRequirements String?
+    specialNeeds        String?
+    emergencyContact    String?
+    emergencyPhone      String?
+
+    // Check-in
+    isCheckedIn Boolean   @default(false)
+    checkedInAt DateTime?
+    checkedInBy String? // User ID of staff who checked them in
+
+    // Timestamps
+    registeredAt DateTime  @default(now())
+    updatedAt    DateTime  @updatedAt
+    confirmedAt  DateTime?
+    cancelledAt  DateTime?
+
+    // Relations
+    user  User  @relation(fields: [userId], references: [id], onDelete: Restrict)
+    event Event @relation(fields: [eventId], references: [id], onDelete: Cascade) //   payment     Payment?    @relation(fields: [paymentId], references: [id], onDelete: SetNull)
+    //   ticketType  TicketType? @relation(fields: [ticketTypeId], references: [id])
+
+    // Unique constraints
+    @@unique([eventId, userId])
+    // @@unique([ticketNumber])
+    // Indexes
+    @@index([eventId, status])
+    @@index([userId, status])
+    @@index([registeredAt])
+    @@index([status, eventId])
+    @@index([isCheckedIn, eventId])
+    @@map("event_registrations")
+}
+
+model EventFeedback {
+    id        String   @id @default(cuid())
+    eventId   String
+    userId    String
+    rating    Int      @db.SmallInt // 1-5
+    comment   String?
+    createdAt DateTime @default(now())
+
+    event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+    user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([eventId, userId])
+    @@index([eventId])
+    @@index([userId])
+    @@index([rating])
+    @@map("event_feedbacks")
 }

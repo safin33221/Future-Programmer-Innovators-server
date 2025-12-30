@@ -1,17 +1,22 @@
 model User {
-    id         String   @id @default(ulid()) // or @default(uuid())
-    firstName  String
-    lastName   String
-    email      String   @unique
-    password   String
-    role       UserRole @default(USER)
-    isVerified Boolean  @default(false)
-    isActive   Boolean  @default(true)
-    createdAt  DateTime @default(now())
-    updatedAt  DateTime @updatedAt
+    id                 String              @id @default(ulid()) // or @default(uuid())
+    firstName          String
+    lastName           String
+    email              String              @unique
+    password           String
+    role               UserRole            @default(USER)
+    isVerified         Boolean             @default(false)
+    isActive           Boolean             @default(true)
+    createdAt          DateTime            @default(now())
+    updatedAt          DateTime            @updatedAt
+    eventFeedbacks     EventFeedback[]
+    eventRegistrations EventRegistration[]
+
+    events Event[]
 
     // Indexes for better query performance
-    @@index([email])
+    // Indexes for better query performance
+
     @@index([role])
     @@index([isActive])
     @@map("users")

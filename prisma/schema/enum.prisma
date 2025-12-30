@@ -1,7 +1,7 @@
 enum UserRole {
-  USER
-  ADMIN
-  MODERATOR
+    USER
+    ADMIN
+    MODERATOR
 }
 
 enum EventStatus {
@@ -11,3 +11,17 @@ enum EventStatus {
     COMPLETED
     CANCELLED
 }
+
+enum RegistrationStatus {
+    PENDING
+    CONFIRMED
+    CANCELLED
+    ATTENDED
+    NO_SHOW
+    WHITELISTED
+    REFUNDED
+    EXPIRED
+}
+
+
+ 
