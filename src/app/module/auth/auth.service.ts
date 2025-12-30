@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import jwt, { type JwtPayload, type SignOptions } from "jsonwebtoken";
+import { type JwtPayload } from "jsonwebtoken";
 import { prisma } from "../../../lib/prisma";
 import envConfig from "../../../config/env.config";
 import { jwtHelper } from "../../helper/jwtHelper";
@@ -35,8 +35,7 @@ const login = async (payload: { email: string; password: string }) => {
     const JwtPayload = {
         userID: user.id,
         email: user.email,
-        roll: user.role
-
+        role: user.role
 
     } as JwtPayload
     const accessToken = jwtHelper.generateToken(JwtPayload, envConfig.JWT.JWT_ACCESS_SECRET, envConfig.JWT.JWT_ACCESS_EXPIRES_IN as string)
