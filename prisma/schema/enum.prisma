@@ -1,7 +1,8 @@
 enum UserRole {
-    USER
+    GUEST
     ADMIN
     MODERATOR
+    MEMBER
 }
 
 enum EventStatus {

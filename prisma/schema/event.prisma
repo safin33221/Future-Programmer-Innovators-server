@@ -78,7 +78,7 @@ model EventRegistration {
 }
 
 model EventFeedback {
-    id        String   @id @default(cuid())
+    id        String   @id @default(uuid())
     eventId   String
     userId    String
     rating    Int      @db.SmallInt // 1-5

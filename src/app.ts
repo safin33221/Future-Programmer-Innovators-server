@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser'
 import envConfig from './config/env.config';
 import globalErrorHandler from './app/middleware/globalErrorHandler';
 import notFound from './app/middleware/notFound';
+import router from './app/routes';
 
 
 
@@ -23,7 +24,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
-
+app.use("/api/v1", router)
 
 app.get('/', (req: Request, res: Response) => {
     res.send({
