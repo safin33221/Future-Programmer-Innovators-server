@@ -5,6 +5,10 @@ import sendResponse from "../../shared/sendResponse";
 import { statusCode } from "../../shared/statusCode";
 import { UserService } from "./user.service";
 
+
+/* =========================
+   Register User
+========================= */
 const registerAsGuest = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const result = await UserService.registerAsGuest(req.body)
    
@@ -16,6 +20,25 @@ const registerAsGuest = catchAsync(async (req: Request, res: Response, next: Nex
     })
 })
 
+
+/* =========================
+   Get All Users
+========================= */
+
+const getAllUsers = catchAsync(
+    async (req: Request, res: Response, next: NextFunction) => {
+        const result = await UserService.getAllUsers();
+
+        sendResponse(res, {
+            status: statusCode.OK,
+            success: true,
+            message: "users retrieved successfully",
+            data: result,
+        });
+    }
+);
+
 export const userController = {
-    registerAsGuest
-}
+    registerAsGuest,
+    getAllUsers,
+};

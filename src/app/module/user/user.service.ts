@@ -39,6 +39,28 @@ const registerAsGuest = async (payload: {
     return safeUser;
 };
 
+const getAllUsers = async () => {
+    const users = await prisma.user.findMany({
+        select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            role: true,
+            createdAt: true,
+            updatedAt: true,
+        },
+        orderBy: {
+            createdAt: "desc",
+        },
+    });
+
+    return users;
+};
+
+
+
 export const UserService = {
     registerAsGuest,
+    getAllUsers
 };
