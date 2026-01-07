@@ -4,6 +4,8 @@ import catchAsync from "../../shared/catchAsync";
 import sendResponse from "../../shared/sendResponse";
 import { statusCode } from "../../shared/statusCode";
 import { UserService } from "./user.service";
+import pick from "../../helper/pick";
+import { userFilterableFields } from "./user.constant";
 
 
 /* =========================
@@ -27,14 +29,10 @@ const registerAsGuest = catchAsync(async (req: Request, res: Response, next: Nex
 
 const getAllUsers = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
-        const result = await UserService.getAllUsers({
-            searchTerm: req.query.searchTerm as string,
-            role: req.query.role as string,
-            page: req.query.page ? Number(req.query.page) : undefined,
-            limit: req.query.limit ? Number(req.query.limit) : undefined,
-            sortBy: req.query.sortBy as string,
-            sortOrder: req.query.sortOrder as "asc" | "desc",
-        });
+
+        const filters = pick(req.query, userFilterableFields) // searching , filtering
+        const options = pick(req.query, ["page", "limit", "sortBy", "sortOrder"])
+        const result = await UserService.getAllUsers(filters, options);
 
         sendResponse(res, {
             status: statusCode.OK,

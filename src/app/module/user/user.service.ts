@@ -2,6 +2,9 @@
 import bcrypt from "bcrypt";
 import { prisma } from "../../../lib/prisma";
 import envConfig from "../../../config/env.config";
+import { paginationHelper, type IOptions } from "../../helper/paginationHelper";
+import type { Prisma } from "../../../../prisma/generated/prisma/client";
+import { userSearchableFields } from "./user.constant";
 
 type GetAllUsersParams = {
     searchTerm?: string | undefined;
@@ -46,41 +49,42 @@ const registerAsGuest = async (payload: {
     return safeUser;
 };
 
-const getAllUsers = async (params: GetAllUsersParams) => {
-    const {
-        searchTerm,
-        role,
-        page = 1,
-        limit = 10,
-        sortBy = "createdAt",
-        sortOrder = "desc",
-    } = params;
+const getAllUsers = async (params: any, options: IOptions) => {
 
-    const skip = (page - 1) * limit;
+    const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options)
+    const { searchTerm, ...filterData } = params;
 
-    const andConditions: any[] = [];
-
-    /* 🔍 Search */
+    const andConditions: Prisma.UserWhereInput[] = [];
     if (searchTerm) {
         andConditions.push({
-            OR: [
-                { firstName: { contains: searchTerm, mode: "insensitive" } },
-                { lastName: { contains: searchTerm, mode: "insensitive" } },
-                { email: { contains: searchTerm, mode: "insensitive" } },
-            ],
-        });
+            OR: userSearchableFields.map(field => ({
+                [field]: {
+                    contains: searchTerm,
+                    mode: "insensitive"
+                }
+            }))
+        })
     }
 
-    /* 🎭 Role filter */
-    if (role) {
-        andConditions.push({ role });
+    if (Object.keys(filterData).length > 0) {
+        andConditions.push({
+            AND: Object.keys(filterData).map(key => ({
+                [key]: {
+                    equals: (filterData as any)[key]
+                }
+            }))
+        })
     }
 
-    const whereCondition =
-        andConditions.length > 0 ? { AND: andConditions } : {};
+    const whereConditions: Prisma.UserWhereInput = andConditions.length > 0 ? {
+        AND: andConditions
+    } : {}
+
+
+
 
     const users = await prisma.user.findMany({
-        where: whereCondition,
+        where: whereConditions,
         skip,
         take: limit,
         select: {
@@ -98,7 +102,7 @@ const getAllUsers = async (params: GetAllUsersParams) => {
     });
 
     const total = await prisma.user.count({
-        where: whereCondition,
+        where: whereConditions,
     });
 
     return {
