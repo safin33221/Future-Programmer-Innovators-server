@@ -3,7 +3,14 @@ import bcrypt from "bcrypt";
 import { prisma } from "../../../lib/prisma";
 import envConfig from "../../../config/env.config";
 
-
+type GetAllUsersParams = {
+    searchTerm?: string | undefined;
+    role?: string | undefined;
+    page?: number | undefined;
+    limit?: number | undefined;
+    sortBy?: string | undefined;
+    sortOrder?: "asc" | "desc" | undefined;
+};
 
 const registerAsGuest = async (payload: {
     firstName: string;
@@ -39,8 +46,43 @@ const registerAsGuest = async (payload: {
     return safeUser;
 };
 
-const getAllUsers = async () => {
+const getAllUsers = async (params: GetAllUsersParams) => {
+    const {
+        searchTerm,
+        role,
+        page = 1,
+        limit = 10,
+        sortBy = "createdAt",
+        sortOrder = "desc",
+    } = params;
+
+    const skip = (page - 1) * limit;
+
+    const andConditions: any[] = [];
+
+    /* 🔍 Search */
+    if (searchTerm) {
+        andConditions.push({
+            OR: [
+                { firstName: { contains: searchTerm, mode: "insensitive" } },
+                { lastName: { contains: searchTerm, mode: "insensitive" } },
+                { email: { contains: searchTerm, mode: "insensitive" } },
+            ],
+        });
+    }
+
+    /* 🎭 Role filter */
+    if (role) {
+        andConditions.push({ role });
+    }
+
+    const whereCondition =
+        andConditions.length > 0 ? { AND: andConditions } : {};
+
     const users = await prisma.user.findMany({
+        where: whereCondition,
+        skip,
+        take: limit,
         select: {
             id: true,
             firstName: true,
@@ -51,11 +93,22 @@ const getAllUsers = async () => {
             updatedAt: true,
         },
         orderBy: {
-            createdAt: "desc",
+            [sortBy]: sortOrder,
         },
     });
 
-    return users;
+    const total = await prisma.user.count({
+        where: whereCondition,
+    });
+
+    return {
+        meta: {
+            page,
+            limit,
+            total,
+        },
+        data: users,
+    };
 };
 
 
