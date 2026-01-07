@@ -6,6 +6,7 @@ import { statusCode } from "../../shared/statusCode";
 import { UserService } from "./user.service";
 import pick from "../../helper/pick";
 import { userFilterableFields } from "./user.constant";
+import type { AuthRequest } from "../../middleware/auth";
 
 
 /* =========================
@@ -43,8 +44,23 @@ const getAllUsers = catchAsync(
     }
 );
 
+const getMe = catchAsync(async (req: AuthRequest, res: Response) => {
+    console.log(req.user);
+    const email = req.user!.email
+    const result = await UserService.getMe(email as string);
+
+    sendResponse(res, {
+        status: statusCode.OK,
+        success: true,
+        message: "profile retrieved successfully",
+        data: result,
+    });
+});
+
+
 
 export const userController = {
     registerAsGuest,
     getAllUsers,
+    getMe
 };

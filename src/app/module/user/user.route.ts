@@ -5,6 +5,8 @@ import { UserRole } from '../../../../prisma/generated/prisma/enums';
 
 const router = express.Router()
 router.get('/', auth(UserRole.ADMIN), userController.getAllUsers)
+router.get("/me", auth(), userController.getMe);
+
 router.post('/registration', userController.registerAsGuest)
 
 export const UserRoute: Router = router;

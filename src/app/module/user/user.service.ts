@@ -6,14 +6,7 @@ import { paginationHelper, type IOptions } from "../../helper/paginationHelper";
 import type { Prisma } from "../../../../prisma/generated/prisma/client";
 import { userSearchableFields } from "./user.constant";
 
-type GetAllUsersParams = {
-    searchTerm?: string | undefined;
-    role?: string | undefined;
-    page?: number | undefined;
-    limit?: number | undefined;
-    sortBy?: string | undefined;
-    sortOrder?: "asc" | "desc" | undefined;
-};
+
 
 const registerAsGuest = async (payload: {
     firstName: string;
@@ -48,6 +41,7 @@ const registerAsGuest = async (payload: {
     const { password, ...safeUser } = result;
     return safeUser;
 };
+
 
 const getAllUsers = async (params: any, options: IOptions) => {
 
@@ -95,6 +89,10 @@ const getAllUsers = async (params: any, options: IOptions) => {
             role: true,
             createdAt: true,
             updatedAt: true,
+            isActive: true,
+            isVerified: true
+
+
         },
         orderBy: {
             [sortBy]: sortOrder,
@@ -115,9 +113,60 @@ const getAllUsers = async (params: any, options: IOptions) => {
     };
 };
 
+const getMe = async (email: string) => {
+    const user = await prisma.user.findUnique({
+        where: { email },
+        include: {
+            admin: true,
+            student: true,
+            mentor: true,
+            moderator: true,
+
+        },
+    })
+
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    let profile = null
+
+    switch (user.role) {
+
+        case "ADMIN": {
+            profile = user.admin
+        }
+        case "MEMBER": {
+            profile = user.student
+        }
+        case "MODERATOR": {
+            profile = user.moderator
+        }
+
+    }
+
+
+
+    return {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+        isVerified: user.isVerified,
+        isActive: user.isActive,
+        profile,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+    };
+
+};
+
+
 
 
 export const UserService = {
     registerAsGuest,
-    getAllUsers
+    getAllUsers,
+    getMe
 };
