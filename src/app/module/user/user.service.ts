@@ -47,6 +47,7 @@ const getAllUsers = async (params: any, options: IOptions) => {
 
     const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options)
     const { searchTerm, ...filterData } = params;
+    console.log(filterData);
 
     const andConditions: Prisma.UserWhereInput[] = [];
     if (searchTerm) {
@@ -99,6 +100,7 @@ const getAllUsers = async (params: any, options: IOptions) => {
         },
     });
 
+
     const total = await prisma.user.count({
         where: whereConditions,
     });
@@ -118,9 +120,9 @@ const getMe = async (email: string) => {
         where: { email },
         include: {
             admin: true,
-            student: true,
             mentor: true,
             moderator: true,
+            member: true
 
         },
     })
@@ -137,7 +139,7 @@ const getMe = async (email: string) => {
             profile = user.admin
         }
         case "MEMBER": {
-            profile = user.student
+            profile = user.member
         }
         case "MODERATOR": {
             profile = user.moderator
@@ -162,11 +164,23 @@ const getMe = async (email: string) => {
 
 };
 
+export const SoftDelete = async (id: string) => {
+    return await prisma.user.update({
+        where: { id },
+        data: {
+            isDelete: true,
+            isActive: false,
+            deletedAt: new Date(),
+        },
+    });
+};
+
 
 
 
 export const UserService = {
     registerAsGuest,
     getAllUsers,
-    getMe
+    getMe,
+    SoftDelete
 };

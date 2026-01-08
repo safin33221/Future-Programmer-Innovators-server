@@ -56,11 +56,23 @@ const getMe = catchAsync(async (req: AuthRequest, res: Response) => {
         data: result,
     });
 });
+const SoftDelete = catchAsync(async (req: Request, res: Response) => {
+    const id = req.params.id
+    const result = await UserService.SoftDelete(id as string);
+
+    sendResponse(res, {
+        status: statusCode.OK,
+        success: true,
+        message: "profile retrieved successfully",
+        data: result,
+    });
+});
 
 
 
 export const userController = {
     registerAsGuest,
     getAllUsers,
-    getMe
+    getMe,
+    SoftDelete
 };
