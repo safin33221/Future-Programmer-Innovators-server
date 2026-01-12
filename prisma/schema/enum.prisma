@@ -3,6 +3,7 @@ enum UserRole {
     ADMIN
     MODERATOR
     MEMBER
+    MENTOR
 }
 
 enum EventStatus {
@@ -62,7 +63,7 @@ enum EnrollmentStatus {
 }
 
 enum AdminLevel {
-  BASIC
-  SUPER
-  OWNER
+    BASIC
+    SUPER
+    OWNER
 }
