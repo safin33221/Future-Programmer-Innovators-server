@@ -63,7 +63,7 @@ const SoftDelete = catchAsync(async (req: Request, res: Response) => {
     sendResponse(res, {
         status: statusCode.OK,
         success: true,
-        message: "profile retrieved successfully",
+        message: "User Deleted Successful",
         data: result,
     });
 });
