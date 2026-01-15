@@ -1,6 +1,7 @@
 import express, { Router } from 'express';
 import { AuthRoute } from '../module/auth/auth.route';
 import { UserRoute } from '../module/user/user.route';
+import { OtpRoute } from '../module/otp/otp.route';
 const router: Router = express.Router()
 
 
@@ -12,6 +13,10 @@ const moduleRoutes = [
     {
         path: '/user',
         route: UserRoute
+    },
+    {
+        path: '/otp',
+        route: OtpRoute
     },
 ]
 

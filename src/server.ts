@@ -1,6 +1,7 @@
 import { Server } from 'http';
 import app from './app';
 import envConfig from './config/env.config';
+import { connectRedis } from './config/redis.config';
 
 
 
@@ -44,4 +45,8 @@ async function bootstrap() {
     }
 }
 
-bootstrap();
+// bootstrap();
+(async () => {
+    connectRedis()
+    bootstrap()
+})()
