@@ -3,8 +3,9 @@ import bcrypt from "bcrypt";
 import { prisma } from "../../../lib/prisma";
 import envConfig from "../../../config/env.config";
 import { paginationHelper, type IOptions } from "../../helper/paginationHelper";
-import type { Prisma } from "../../../../prisma/generated/prisma/client";
+
 import { userSearchableFields } from "./user.constant";
+import { Prisma } from "../../../../prisma/generated/prisma/client";
 
 
 
