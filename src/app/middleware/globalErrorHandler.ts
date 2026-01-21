@@ -3,6 +3,7 @@ import type { NextFunction, Request, Response } from "express"
 import httpStatus from "http-status"
 import { Prisma } from "../../../prisma/generated/prisma/client";
 
+
 const globalErrorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
     console.log(err)
     let statusCode: number = err.statusCode || httpStatus.INTERNAL_SERVER_ERROR;
